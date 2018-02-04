@@ -1,14 +1,14 @@
-from PyLE_Driver.framework import Director
+from PyLE_Driver.framework import Presenter
 
 
-class Main(Director):
+class Main(Presenter):
 
     @property
     def quit(self):
         return self.__quit_command
 
     def __init__(self):
-        Director.__init__(self)
+        Presenter.__init__(self)
 
         pass
 

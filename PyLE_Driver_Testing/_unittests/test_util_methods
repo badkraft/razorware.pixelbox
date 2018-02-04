@@ -1,0 +1,46 @@
+import json
+import os
+import unittest
+
+from PyLE_Driver.framework import load_markup
+
+
+class TestUtilMethods(unittest.TestCase):
+    def test_load_path(self):
+        expected_path = 'D:\RzWare.Pixelbox\\repos\\razorware.pixelbox\PyLE_Driver_Testing\sample_1_app.json'
+
+        actual_path = self.__get_abs_path('sample_1_app.json')
+
+        self.assertTrue(os.path.isfile(expected_path), 'not a file:\r{file}'
+                        .format(file=expected_path))
+        self.assertTrue(os.path.isfile(actual_path), 'not a file:\r{file}'
+                        .format(file=actual_path))
+        self.assertEqual(expected_path, actual_path, 'paths not equal:\r{exp}\r{act}'
+                         .format(exp=expected_path,
+                                 act=actual_path))
+
+    def test_load_json(self):
+        test_markup = '{' \
+                      '"application": "App", ' \
+                      '"imports": ["tkinter"], ' \
+                      '"root": "Tk", "startup": ' \
+                      '"test_app.views.sample_1" ' \
+                      '}'
+        expected_json = json.loads(test_markup)
+
+        path = self.__get_abs_path('sample_1_app.json')
+
+        actual_json = load_markup(path=path)
+
+        self.assertEqual(expected_json, actual_json)
+
+    def __get_abs_path(self, file, relative=None):
+        if relative:
+            # join '..\\..' etc.
+            pass
+        else:
+            relative = '..'
+
+        return os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                            relative,
+                                            file))
