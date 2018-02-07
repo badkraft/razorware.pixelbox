@@ -10,6 +10,7 @@ dir_path = os.path.dirname(__file__)
 
 __markup = 'markup'
 __modules = {}
+__imports = {}
 __labels = {}
 
 Grid = namedtuple('Grid', 'row col align row_span col_span')
@@ -31,20 +32,19 @@ def load_binder(target_info):
     return load_markup(path=binder_path)
 
 
-def check_labels(pre_markup):
-    for k, v in pre_markup.items():
-        if 'l:' in k:
-            label = k.split(':')[1]
-            if 'mod-' in v:
-                # handle module switch
-                path = v.split('-')[1]
-                v = importlib.import_module(path)
-            elif 'dir-' in v:       # NOTE: default behavior
-                # handle directory path
-                path = v.split('-')[1]
-                v = path
+def add_label(label):
+    name, value = label
 
-            __labels.update({label: v})
+    if 'mod-' in value:
+        # handle module switch
+        path = value.split('-')[1]
+        value = importlib.import_module(path)
+    elif 'dir-' in value:  # NOTE: default behavior
+        # handle directory path
+        path = value.split('-')[1]
+        value = path
+
+    __labels.update({name: value})
 
 
 def is_label(tag):
@@ -63,8 +63,11 @@ def label_ref(key):
     return __labels[key]
 
 
-def reference(control, sources):
+def reference(control, sources=None):
     cls = None
+
+    if sources is None:
+        sources = [i.__name__ for i in __imports.values()]
 
     if not isinstance(sources, list):
         sources = [sources]
@@ -164,6 +167,21 @@ def load_markup(**kwargs):
         return None
 
 
+def make_func(body_cnf):
+    if '-' in body_cnf:
+        typ, ref = body_cnf.split('-')
+
+        if typ == 'cls':
+            if '.' in ref:
+                # lib.obj
+                namespace = ref.split('.')
+                mod_path, cls = ('.'.join(namespace[:-1]), namespace[-1])
+                module = __imports[mod_path]
+                ref = getattr(module, cls)
+
+                return lambda: ref()
+
+
 def package(top_module, namespace):
     # split on '.': namespace.split('.')
     # join excluding last element of the list: [:-1]
@@ -173,6 +191,44 @@ def package(top_module, namespace):
     return importlib.import_module(parent_module)
 
 
+def add_imports(imports_cnf):
+    for imp in imports_cnf:
+        if '@' in imp:
+            name, alias = imp.split('@')
+            __imports.update({alias: importlib.import_module(name)})
+        else:
+            __imports.update({imp: importlib.import_module(imp)})
+
+    return __imports
+
+
+def get_import(name):
+    return __imports[name]
+
+
 class Presenter(ABC):
     def __init__(self):
         pass
+
+
+# apparently we can make View accept a generic 'Frame' or whatever the base is
+from tkinter import Frame
+
+
+class View(ABC, Frame):
+    @property
+    def context(self):
+        return self.__context
+
+    def __init__(self, master, cnf=None):
+        Frame.__init__(self, master, cnf)
+
+        self.master = master
+        self.__context = None
+
+    def set_context(self, value):
+        self.__context = value
+
+        print("[View:{self}] set data context <Presenter:{context}>"
+              .format(self=self.__class__.__name__,
+                      context=value.__class__.__name__))

@@ -1,7 +1,9 @@
 from . import load_binder
 from .controller import Controller
 from .. import TargetInfo
-from ..framework import package
+from ..framework import package, \
+    make_func, \
+    add_imports
 
 
 class Application:
@@ -15,27 +17,42 @@ class Application:
 
     @property
     def imports(self):
-        return list(self.__imports)
+        return dict(self.__imports)
 
     @property
     def has_binder(self):
-        return load_binder(self.__app_info) is not None
+        return load_binder(self.__app_cnf) is not None
 
-    def __init__(self, app_info):
+    def __init__(self, app_cnf):
         """
         Application reads the json 'markup' to bootstrap the application
         framework.
 
-        :param app_info:
+        :param app_cnf:
         :return:
         """
-        self.__app_info = app_info
+        self.__app_cnf = app_cnf
 
-        markup = load_binder(self.__app_info)
-        self.__app_name = markup['application']
-        self.__imports = markup['imports']
-        self.__module = package(self.__app_info.module.__name__, markup['startup'])
-        self.__startup_info = TargetInfo(self.__module, '{file}.json'.format(file=markup['startup'].split('.')[-1]))
+        markup = load_binder(self.__app_cnf)
+
+        for k, v in markup.items():
+            if k == 'application':
+                self.__app_name = v
+
+            elif k == 'imports':
+                # {'tkinter': <module>}
+                v.append(self.__app_cnf.module.__name__)
+                self.__imports = add_imports(v)
+
+            elif k == 'startup':
+                self.__module = package(self.__app_cnf.module.__name__, v)
+                self.__startup_info = TargetInfo(self.__module, '{file}.json'.format(file=v.split('.')[-1]))
+            else:
+                if ':' in k:
+                    t, n = k.split(':')
+                    if t in ['f']:  # function
+                        self.__add_member(t, n, v)
+
         self.__controller = None
 
         self.mainloop = self.__run
@@ -50,3 +67,13 @@ class Application:
 
         if self.__controller is None:
             raise Exception('unknown error parsing config; controller could not be instantiated')
+
+    def __add_member(self, m_type, m_name, body):
+        if m_type == 'f':
+            # body is a return
+            func = make_func(body)
+            self.__dict__.update({m_name: func})
+
+    def __getitem__(self, item):
+        if item in self.__dict__:
+            return self.__dict__[item]

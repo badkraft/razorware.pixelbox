@@ -1,29 +1,26 @@
 {
-  "Main:Frame": [
-    {
-      "namespace": "app.views.main",
-      "import": [],
-      "title": "Sample 1"
-    },
-    {
-      "Grid": [
-        [
-          "<!-- Ignored Control -->",
-          {}
-        ],
-        [
-          "Label",
-          {
-            "master": "Main.master",
-            "text": "Hello, World!",
-            "grid": {
-              "row": 0,
-              "col": 1,
-              "align": "left right top bottom"
-            }
+  "header": {
+    "class": "sample.Sample",
+    "import": [],
+    "title": "Sample 1"
+  },
+  "content": {
+    "Grid": [
+      [
+        "<!-- Ignored Control -->",
+        {}
+      ],
+      [
+        "Label",
+        {
+          "text": "Hello, World!",
+          "grid": {
+            "row": 0,
+            "col": 1,
+            "align": "left right top bottom"
           }
-        ]
+        }
       ]
-    }
-  ]
+    ]
+  }
 }

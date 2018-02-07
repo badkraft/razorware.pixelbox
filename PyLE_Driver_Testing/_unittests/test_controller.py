@@ -1,31 +1,27 @@
+import importlib
 import unittest
 
-from PyLE_Driver_Testing import load_binder
-from PyLE_Driver_Testing.test_app import test_app_module
-
 from PyLE_Driver import TargetInfo
-from PyLE_Driver.framework import Controller
+from PyLE_Driver.framework import add_imports
+from PyLE_Driver.framework.controller import Controller
 
 
 class TestControllerMethods(unittest.TestCase):
 
-    def test_binder(self):
-        view_info = TargetInfo(test_app_module, 'views.main')
-
-        markup = load_binder(view_info)
-
-        self.assertIsNotNone(markup)
-
     def test_initialization(self):
-        view_info = TargetInfo(test_app_module, 'views.main')
-        exp_name = "Main"
+        add_imports(['tkinter@tk'])
+
+        target_module = importlib.import_module('PyLE_Driver_Testing.test_app.views')
+        view_cnf = TargetInfo(target_module, 'sample_1.json')
+
+        exp_class = "Main"
         exp_base = "Frame"
 
-        controller = Controller(view_info)
+        controller = Controller(view_cnf)
 
         self.assertTrue(controller is not None)
         self.assertTrue(controller.has_binder)
-        self.assertEqual(exp_name, controller.name)
+        self.assertEqual(exp_class, controller.name)
         self.assertEqual(exp_base, controller.base_name)
 
 if __name__ == '__main__':
