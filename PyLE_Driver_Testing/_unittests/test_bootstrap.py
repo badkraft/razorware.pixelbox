@@ -10,8 +10,10 @@ class TestBootstrapMethods(unittest.TestCase):
     def test_initialization(self):
         expected_dict = {
             "application": "App",
-            "imports": ["tkinter"],
-            "root": "Tk",
+            "imports": [
+                "tkinter"
+            ],
+            "f:root": "cls-tkinter.Tk",
             "startup": "test_app.views.sample_1"
         }
 

@@ -7,6 +7,7 @@ from ..framework import package, \
 
 
 class Application:
+
     @property
     def name(self):
         return self.__app_name
@@ -14,6 +15,10 @@ class Application:
     @property
     def controller(self):
         return self.__controller
+
+    @property
+    def extensions(self):
+        return list(self.__ext__.keys())
 
     @property
     def imports(self):
@@ -31,6 +36,7 @@ class Application:
         :param app_cnf:
         :return:
         """
+        self.__ext__ = {}
         self.__app_cnf = app_cnf
 
         markup = load_binder(self.__app_cnf)
@@ -47,6 +53,7 @@ class Application:
             elif k == 'startup':
                 self.__module = package(self.__app_cnf.module.__name__, v)
                 self.__startup_info = TargetInfo(self.__module, '{file}.json'.format(file=v.split('.')[-1]))
+
             else:
                 if ':' in k:
                     t, n = k.split(':')
@@ -59,7 +66,7 @@ class Application:
 
     def __run(self):
         self.__initialize()
-        self.__controller.view.mainloop()
+        self.__controller.view(self).mainloop()
 
     def __initialize(self):
         # TODO: try-catch
@@ -72,8 +79,8 @@ class Application:
         if m_type == 'f':
             # body is a return
             func = make_func(body)
-            self.__dict__.update({m_name: func})
+            self.__ext__.update({m_name: func})
 
     def __getitem__(self, item):
-        if item in self.__dict__:
-            return self.__dict__[item]
+        if item in self.__ext__:
+            return self.__ext__[item]

@@ -9,9 +9,9 @@ from PyLE_Driver.framework.controller import Controller
 class TestControllerMethods(unittest.TestCase):
 
     def test_initialization(self):
-        add_imports(['tkinter@tk'])
-
         target_module = importlib.import_module('PyLE_Driver_Testing.test_app.views')
+        add_imports([target_module.__name__, 'tkinter@tk'])
+
         view_cnf = TargetInfo(target_module, 'sample_1.json')
 
         exp_class = "Main"

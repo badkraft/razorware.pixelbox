@@ -1,11 +1,18 @@
+import importlib
 import json
 import os
 import unittest
 
-from PyLE_Driver.framework import load_markup
+from PyLE_Driver import TargetInfo
+from PyLE_Driver.framework import load_markup, \
+    load_binder, \
+    configure_header, \
+    View
+from PyLE_Driver.framework.application import Application
 
 
 class TestUtilMethods(unittest.TestCase):
+
     def test_load_path(self):
         expected_path = 'D:\RzWare.Pixelbox\\repos\\razorware.pixelbox\PyLE_Driver_Testing\sample_1_app.json'
 
@@ -23,16 +30,31 @@ class TestUtilMethods(unittest.TestCase):
         test_markup = '{' \
                       '"application": "App", ' \
                       '"imports": ["tkinter"], ' \
-                      '"root": "Tk", "startup": ' \
-                      '"test_app.views.sample_1" ' \
+                      '"f:root": "cls-tkinter.Tk", \
+                      "startup": "test_app.views.sample_1" ' \
                       '}'
         expected_json = json.loads(test_markup)
-
         path = self.__get_abs_path('sample_1_app.json')
-
         actual_json = load_markup(path=path)
 
         self.assertEqual(expected_json, actual_json)
+
+    def test_load_tk_master(self):
+        target_module = importlib.import_module('PyLE_Driver_Testing')
+        app_cnf = TargetInfo(target_module, 'sample_1_app.json')
+        application = Application(app_cnf)
+
+        target_module = importlib.import_module('PyLE_Driver_Testing.test_app.views')
+        view_cnf = TargetInfo(target_module, 'sample_1.json')
+        markup = load_binder(view_cnf)
+        header = configure_header(view_cnf, markup['header'])
+
+        cls_cnf = header['class']
+        params = {'master': application.root(), 'cnf': {}}
+        view = cls_cnf.reference(**params)
+
+        self.assertIsNotNone(view)
+        self.assertTrue(isinstance(view, View))
 
     def __get_abs_path(self, file, relative=None):
         if relative:

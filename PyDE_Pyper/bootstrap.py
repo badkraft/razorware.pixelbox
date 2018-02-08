@@ -2,19 +2,19 @@ import importlib
 
 try:
     from PyLE_Driver import TargetInfo
-except:
+except ImportError:
     import sys
     # is there a better way to do this?
     sys.path.insert(1, '/home/pi/RzWare.Pixelbox')
+    from PyLE_Driver import TargetInfo
     
     print(sys.path)
 
-from PyLE_Driver import TargetInfo
 from PyLE_Driver.bootstrap import Bootstrap
 
 
 _mod_info = TargetInfo(importlib.import_module('PyDE_Pyper'),
-                       'application')
+                       'application.json')
 
 
 class Application(Bootstrap):

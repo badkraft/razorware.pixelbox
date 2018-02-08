@@ -67,12 +67,10 @@ class TestApplicationMethods(unittest.TestCase):
 
         application = Application(app_cnf)
 
-        members = application.__dict__
+        members = application.extensions
         self.assertTrue(member in members)
 
         root = application[member]
-        # duck-typed 'root' member of application
-        self.assertEqual(root, application.root)
         self.assertIsNotNone(application[member])
         self.assertTrue(isinstance(root(), tk.Tk))
 
@@ -83,14 +81,8 @@ class TestApplicationMethods(unittest.TestCase):
 
         application = Application(app_cnf)
 
-        members = application.__dict__
+        members = application.extensions
         self.assertTrue(member in members)
-
-        root = application[member]
-        # duck-typed 'root' member of application
-        self.assertEqual(root, application.root)
-        self.assertIsNotNone(application[member])
-        self.assertTrue(isinstance(root(), tk.Tk))
 
 if __name__ == '__main__':
     unittest.main()

@@ -130,7 +130,7 @@ class LayoutManager:
     1. Can we decouple at LayoutManager and write different flavors (Tkinter, QT, etc)?
     2. a) Are developers willing to roll their own LayoutManager flavor?
        b) Does this requirement negate any value added by using this library?
-    3. What are other viable options to decouple?
+    3. What are other viable options to decouple? Maybe a map of some sort???
     """
 
     def __init__(self, view, content, imports):
@@ -143,74 +143,74 @@ class LayoutManager:
         children = []
 
         for d in content:
-            for k, v in d.items():
-                if k == 'Grid':
-                    print("grid layout")
+            if d == 'Grid':
+                print("grid layout")
 
-                    layout.update({'type': k})
-                    layout.update({'manager': LayoutManager})
-                    layout.update({'content': v})
-                elif k == 'Menu':
-                    print("menu layout")
+                layout.update({'type': d})
+                layout.update({'manager': LayoutManager})
+                layout.update({'content': content[d]})
 
-                    tk_menu = reference(k, self.__imports)
-                    menu = _build_menu(self.__view, tk_menu(master=self.__view.master), tupleize(v, 2), self.__imports)
-                    self.__view.master.config(menu=menu)
-                else:
-                    break
+            elif d == 'Menu':
+                print("menu layout")
 
-        if layout.keys():
-            self.__layout_type = layout['type']
-        if 'content' in layout:
-            children = tupleize(layout['content'], 2)
+                tk_menu = reference(d, self.__imports)
+                menu = _build_menu(self.__view, tk_menu(master=self.__view.master), content[d], self.__imports)
+                self.__view.master.config(menu=menu)
 
-        self.__initialize_content(children)
+        self.__initialize_content(layout)
 
-    def __initialize_content(self, children):
-        self.__children = self.__build_controls(self.__view.master, children)
+    def __initialize_content(self, layout):
+        self.__geometry = layout['type']
+        self.__children = self.__build_controls(self.__view.master, layout['content'])
 
     def __build_controls(self, master, controls):
         container = []
 
-        for ch in controls:
-            tk_class = reference(ch[0], self.__imports)
-            tk_cnf = ch[1]
+        for cls_name, cls_cnf in controls:
+            # valid comment
+            if cls_name.startswith('<!--') and cls_name.endswith('-->'):
+                continue
+            elif (cls_name.startswith('<!--') and not cls_name.endswith('-->')) or \
+                    (cls_name.endswith('-->') and not cls_name.startswith('<!--')):
+                raise Exception('improper comment')
+
+            tk_class = reference(cls_name)
             grid = None
 
-            if 'grid' in tk_cnf:
-                grid = _grid_cnf(tk_cnf['grid'])
-                del tk_cnf['grid']
-            if 'borderstyle' in tk_cnf:
+            if 'grid' in cls_cnf:
+                grid = _grid_cnf(cls_cnf['grid'])
+                del cls_cnf['grid']
+            if 'borderstyle' in cls_cnf:
                 # RAISED='raised'
                 # SUNKEN='sunken'
                 # FLAT='flat'
                 # RIDGE='ridge'
                 # GROOVE='groove'
                 # SOLID = 'solid'
-                setting = tk_cnf['borderstyle']
-                del tk_cnf['borderstyle']
-                tk_cnf.update({'relief': setting})
+                setting = cls_cnf['borderstyle']
+                del cls_cnf['borderstyle']
+                cls_cnf.update({'relief': setting})
 
             child = None
 
             # handle class corner cases
             if tk_class is tk.Image:
-                child = _get_image_container(tk_cnf, self.__imports, master)
-            if 'content' in tk_cnf:
+                child = _get_image_container(cls_cnf, self.__imports, master)
+            if 'content' in cls_cnf:
                 # recursive iteration to build child controls
-                ch_cnf = tk_cnf['content']
-                del tk_cnf['content']
+                ch_cnf = cls_cnf['content']
+                del cls_cnf['content']
 
-                child = tk_class(master=master, cnf=tk_cnf)
+                child = tk_class(master=master, cnf=cls_cnf)
                 content = self.__build_controls(child, tupleize(ch_cnf, 2))
 
                 if tk_class is tk.PanedWindow:
                     for c in content:
                         child.add(c)
             else:
-                child = tk_class(master=master, cnf=tk_cnf)
+                child = tk_class(master=master, cnf=cls_cnf)
 
-            if self.__layout_type == 'Grid' and grid is not None:
+            if self.__geometry == 'Grid' and grid is not None:
                 child.grid({'row': grid.row,
                             'column': grid.col,
                             'sticky': grid.align,

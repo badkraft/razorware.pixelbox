@@ -1,59 +1,11 @@
 import importlib
-from collections import namedtuple
 
 from . import binder, \
     load_binder, \
-    add_label, \
+    configure_header, \
     is_label, \
-    label_ref, \
-    reference
+    label_ref
 from .layout_manager import LayoutManager
-
-ViewInfo = namedtuple('ViewInfo', 'reference class_name')
-
-
-def _configure_header(view_cnf, hdr_cnf):
-    """
-    Builds a more useful header for internal use
-
-    :param hdr_cnf: Example json:
-        "header": {
-            "class": "Main:Frame",
-            "namespace": "test_app.views.main",
-            "import": [...],
-            "title": "Sample 1",
-            ...
-        }
-
-    :return:
-        "header": {
-            "class": ClassInfo
-            "namespace": "test_app.views.main",
-            "import": [...],
-            "title": "Sample 1",
-            ...
-        }
-    """
-    hdr = {}
-
-    for k, v in dict(hdr_cnf).items():
-        if k == 'class':
-            mod, cls = v.split('.')
-            module = importlib.import_module('{root}.{module}'
-                                             .format(root=view_cnf.module.__name__,
-                                                     module=mod))
-            ref = getattr(module, cls)
-            info = ViewInfo(ref, cls)
-
-            hdr.update({'class': info})
-
-        else:
-            if 'l:' in k:
-                add_label(k.split(':')[1])
-
-            hdr.update({k: v})
-
-    return hdr
 
 
 def _configure_resources(res_cnf):
@@ -96,16 +48,12 @@ class Controller:
         return binder(self.__view_cnf) is not None
 
     @property
-    def has_master(self):
-        return self.__master is not None
-
-    @property
     def has_view(self):
-        return self.__view is not None
+        return self.__view_cls is not None
 
     @property
     def view(self):
-        return self.__view()
+        return self.__view
 
     def __init__(self, view_cnf):
         """
@@ -116,12 +64,14 @@ class Controller:
         :return:
         """
         self.__view_cnf = view_cnf
+        self.__view_cls = None
         self.__cnf = {}
         self.__name = ''
         self.__base = ''
         self.__header = {}
         self.__content = None
         self.__resources = None
+        self.__master = None
 
         self._initialize(self.__view_cnf)
 
@@ -143,7 +93,8 @@ class Controller:
 
         # 1. configure header (also checks for labels)
         print("configure header")
-        self.__header = _configure_header(self.__view_cnf, header)
+        self.__header = configure_header(self.__view_cnf, header)
+        self.__name = self.__header['class'].class_name
 
         # 2. configure resources (if applicable)
         print("configure resources")
@@ -158,13 +109,12 @@ class Controller:
 
         self.__manager = None
         # self.__master = reference(self.__header['master'], self.__header['import'])
-        self.__view = reference(self.__name)
+        self.__view_cls = self.__header['class'].reference
 
         if 'title' in self.__header:
             self.__cnf.update({'title': self.__header['title']})
 
-    def __view(self):
-        master = lambda: ""  # self.__master
+    def __view(self, parent):
         cnf = dict(self.__cnf)
         title = None
 
@@ -172,8 +122,10 @@ class Controller:
             title = cnf['title']
             del cnf['title']
 
-        view = self.__view(master=master(), **cnf)
-        view.set_context(self.__resources['context'])
+        view = self.__view_cls(ext=parent.__ext__, **cnf)
+
+        if 'context' in self.__resources:
+            view.set_context(self.__resources['context'])
 
         if title is not None:
             view.master.title(title)

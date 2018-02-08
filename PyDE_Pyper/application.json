@@ -1,0 +1,8 @@
+{
+  "application": "PydePyper",
+  "imports": [
+    "tkinter@tk"
+  ],
+  "f:root": "cls-tk.Tk",
+  "startup": "app.views.main"
+}

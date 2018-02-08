@@ -15,6 +15,7 @@ __labels = {}
 
 Grid = namedtuple('Grid', 'row col align row_span col_span')
 ImageSource = namedtuple('ImageSource', 'path')
+ViewInfo = namedtuple('ViewInfo', 'reference class_name')
 
 
 def binder(target_info):
@@ -204,6 +205,51 @@ def add_imports(imports_cnf):
 
 def get_import(name):
     return __imports[name]
+
+
+def configure_header(view_cnf, hdr_cnf):
+    """
+    Builds a more useful header for internal use
+
+    :param view_cnf: Example json:
+        "header": {
+            "class": "Main:Frame",
+            "namespace": "test_app.views.main",
+            "import": [...],
+            "title": "Sample 1",
+            ...
+        }
+    :param hdr_cnf:
+
+    :return:
+        "header": {
+            "class": ClassInfo
+            "namespace": "test_app.views.main",
+            "import": [...],
+            "title": "Sample 1",
+            ...
+        }
+    """
+    hdr = {}
+
+    for k, v in dict(hdr_cnf).items():
+        if k == 'class':
+            mod, cls = v.split('.')
+            module = importlib.import_module('{root}.{module}'
+                                             .format(root=view_cnf.module.__name__,
+                                                     module=mod))
+            ref = getattr(module, cls)
+            info = ViewInfo(ref, cls)
+
+            hdr.update({'class': info})
+
+        else:
+            if 'l:' in k:
+                add_label(k.split(':')[1])
+
+            hdr.update({k: v})
+
+    return hdr
 
 
 class Presenter(ABC):
