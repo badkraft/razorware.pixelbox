@@ -9,7 +9,5 @@ that implement the Model-View-Presenter (MVP) paradigm.
 
 The PyLE framework relies on several conventions. The first is how the a project is organized:
 
-![conventional project organization][logo]
+![conventional project organization](![conventional project organization](https:// ~/repo_images/conv_proj_org.png "Convention 1: Project Organization")
 
-
-[logo]: http:// ~/./repo_images/conv_proj_org.png "Convention 1: Project Organization"
