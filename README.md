@@ -37,7 +37,7 @@ found. That said, documentation will assume this convention.
 
 There is a lot going on in this example. JSON is, as its primary strength, a standardized data structure. The PyLE framework takes 
 advantage of the standardized structure and its *native* characterization as a Python dictionary. Within the data structure, we
-essentially write a specialized coding scheme that the framework interprets. The details will be covered in detail in documentation.  
+essentially write a specialized coding scheme that the framework interprets. The details will be covered further in documentation.  
 However, concerning convention, the `startup` key is what is important. Here we tell the framework the path to the initial view
 to be rendered. Reference the assumed convention regarding names of items in the `views` module. Both items are named `main` with only
 the extension being the difference. Likewise, the presenter (and presumably, a model if applicable) has the same name.  
