@@ -15,5 +15,8 @@ The PyLE framework relies on several conventions. The first is how the a project
   <img src="https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/conv_proj_org.png"/>
 </p>
 
+--|--|--
+|:ff:|
+
 [conv_1]: https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/conv_proj_org.png "Convention 1: Project Organization"
 
