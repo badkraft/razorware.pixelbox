@@ -10,6 +10,17 @@ from . import reference, \
     Grid, \
     ImageSource
 
+__anchors = {
+    'left': 'w',
+    'left right': 'center',
+    'left right top bottom': 'center',
+    'left top': 'nw',
+    'top': 'n',
+    'right top': 'ne',
+    'right': 'e',
+    'right bottom': 'se'
+}
+
 
 def _build_menu(view, tk_menu, mnu_cnf, imports):
     for k, v in mnu_cnf:
@@ -96,26 +107,31 @@ def _get_image_container(tk_cnf, imports, master):
 def _grid_cnf(cnf):
     row = cnf['row'] if 'row' in cnf else None
     col = cnf['col'] if 'col' in cnf else None
-    align = None
+    align = ['center']
+    sticky = None
 
     if 'align' in cnf:
         align = []
         for anchor in cnf['align'].split(" "):
             if anchor == 'left':
-                align.append('W')
+                align.append('w')
             elif anchor == 'right':
-                align.append('E')
+                align.append('e')
             elif anchor == 'top':
-                align.append('N')
+                align.append('n')
             elif anchor == 'bottom':
-                align.append('S')
+                align.append('s')
 
-        align = " ".join(align)
+        align = "".join(align)
+
+        if align == 'we':
+            sticky = 'we'
+            align = 'center'
 
     row_span = cnf['row-span'] if 'row-span' in cnf else None
     col_span = cnf['col-span'] if 'col-span' in cnf else None
 
-    return Grid(row, col, align, row_span, col_span)
+    return Grid(row, col, align, sticky, row_span, col_span)
 
 
 class LayoutManager:
@@ -179,6 +195,8 @@ class LayoutManager:
 
             if 'grid' in cls_cnf:
                 grid = _grid_cnf(cls_cnf['grid'])
+                if grid.align:
+                    cls_cnf.update({'anchor': grid.align})
                 del cls_cnf['grid']
             if 'borderstyle' in cls_cnf:
                 # RAISED='raised'
@@ -213,7 +231,7 @@ class LayoutManager:
             if self.__geometry == 'Grid' and grid is not None:
                 child.grid({'row': grid.row,
                             'column': grid.col,
-                            'sticky': grid.align,
+                            'sticky': grid.sticky,
                             'rowspan': grid.row_span,
                             'columnspan': grid.col_span})
 

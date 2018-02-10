@@ -13,7 +13,7 @@ __modules = {}
 __imports = {}
 __labels = {}
 
-Grid = namedtuple('Grid', 'row col align row_span col_span')
+Grid = namedtuple('Grid', 'row col align sticky row_span col_span')
 ImageSource = namedtuple('ImageSource', 'path')
 ViewInfo = namedtuple('ViewInfo', 'reference class_name')
 

@@ -3,4 +3,11 @@ from PyLE_Driver.framework import View
 
 class Sample(View):
     def __init__(self, **kwargs):
-        View.__init__(self, master=kwargs['master'], cnf=kwargs['cnf'])
+        if 'master' in kwargs:
+            View.__init__(self, master=kwargs['master'], cnf=kwargs['cnf'])
+
+        elif 'ext' in kwargs:
+            ext = kwargs['ext']
+            cnf = None if 'cnf' not in kwargs else kwargs['cnf']
+
+            View.__init__(self, master=ext['root'](), cnf=cnf)

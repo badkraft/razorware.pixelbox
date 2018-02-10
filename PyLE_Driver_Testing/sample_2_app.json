@@ -1,0 +1,8 @@
+{
+  "application": "App",
+  "imports": [
+    "tkinter@tk"
+  ],
+  "f:root": "cls-tk.Tk",
+  "startup": "test_app.views.sample_1"
+}

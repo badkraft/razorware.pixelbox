@@ -14,9 +14,10 @@
         "Label",
         {
           "text": "Hello, World!",
+          "width": 75,
           "grid": {
             "row": 0,
-            "col": 1,
+            "col": 0,
             "align": "left right top bottom"
           }
         }

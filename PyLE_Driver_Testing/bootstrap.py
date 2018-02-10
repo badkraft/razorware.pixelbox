@@ -4,6 +4,7 @@ try:
     from PyLE_Driver import TargetInfo
 except ImportError:
     import sys
+
     # is there a better way to do this?
     sys.path.insert(1, '/home/pi/RzWare.Pixelbox')
     from PyLE_Driver import TargetInfo
@@ -13,15 +14,7 @@ except ImportError:
 from PyLE_Driver.bootstrap import Bootstrap
 
 
-_mod_info = TargetInfo(importlib.import_module('PyLE_Driver_Testing'),
-                       'sample_1a_app.json')
-
-
 class Application(Bootstrap):
-
-    def __init__(self):
-        Bootstrap.__init__(self, _mod_info)
-
-
-app = Application()
-app.mainloop()
+    def __init__(self, file):
+        mod_info = TargetInfo(importlib.import_module('PyLE_Driver_Testing'), file)
+        Bootstrap.__init__(self, mod_info)
