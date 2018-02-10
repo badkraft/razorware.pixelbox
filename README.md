@@ -72,7 +72,7 @@ the importing source but do not push the file without consent. Doing so will cau
 ## Views
 The 2 files for the view - `main.json` and `main.py` - are necessary because one is the descriptive language that provides 
 layout information for the rendering engine (initially interpreted by PyLE) as well as data- and command-bindings via the
-associated presenter.
+associated presenter...
 
 ```json
 {
@@ -95,7 +95,7 @@ associated presenter.
           "grid": {
             "row": 0,
             "col": 0,
-            "align": "left right top bottom"
+            "align": "left"
           }
         }
       ]
@@ -104,6 +104,23 @@ associated presenter.
 }
 ```
 
+...and the other is a stub for the view code itself:
+
+```python
+from PyLE_Driver.framework import View
+
+
+class Main(View):
+  def __init__(self, ext, cnf=None):
+    View.__init__(self, master=ext['root'](), cnf=cnf)
+```
+
+This particular example renders the following:
+<p align="center">
+  <img src="https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/sample_hello_world.png"
+       alt="Sample 'Hello, World!'"
+       title="Hello, World!"/>
+</p>
 
 
 [conv_1b]: https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/content_presenters.png "Convention 1b: Presenter Naming Convention"
