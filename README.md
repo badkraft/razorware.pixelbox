@@ -15,28 +15,17 @@ The PyLE framework relies on several conventions. The first is how a project is 
 </p>
 
 1. `models` - this is where plain old class objects (POCOs) or data-transfer objects (DTOs) are kept.
-<!-- 
-<p align="center"
-  <img src=""
-       alt="place holder"
-       title="Convention 1a: TODO"/>
-</p> 
---> 
 2. `presenters` - where the behavioral binders are placed.
-<p align="left">
-  <img src="https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/content_presenters.png"
-       alt="PyLE presenter content naming by convention"
-       title="Convention 1b: Presenter Naming Convention"/>
-</p>
+![PyLE presenter content naming by convention][conv_1b]  
 3. `views` - .json markup files placed here.
-<p align="left">
-  <img src="https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/content_views.png"
-       alt="PyLE view content naming by convention"
-       title="Convention 1c: View Naming Convention"/>
-</p> 
+![PyLE view content naming by convention][conv_1c]  
 
 This *convention* is not a requirement but makes organization much easier to maintain and standardizes how the framework
 will find all the parts necessary to properly render data and bind commands to menus, etc. That said, documentation will
 assume this convention.
 
 4. `application.json` - the application markup; provides information to the framework about the application.
+
+
+[conv_1b]: https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/content_presenters.png "Convention 1b: Presenter Naming Convention"
+[conv_1c]: https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/content_views.png "Convention 1c: View Naming Convention"
