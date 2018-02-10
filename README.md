@@ -14,20 +14,22 @@ The PyLE framework relies on several conventions. The first is how a project is 
        title="Convention 1: Project Organization"/>
 </p>
 
-1. `models` - this is where plain old class objects (POCOs) or data-transfer objects (DTOs) are kept.  
-<p align="center">
+1. `models` - this is where plain old class objects (POCOs) or data-transfer objects (DTOs) are kept.
+<!-- 
+<p align="center"
   <img src=""
        alt="place holder"
        title="Convention 1a: TODO"/>
-</p>  
-2. `presenters` - where the behavioral binders are placed.  
-<p align="center">
+</p> 
+--> 
+2. `presenters` - where the behavioral binders are placed.
+<p align="left">
   <img src="https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/content_presenters.png"
        alt="PyLE presenter content naming by convention"
        title="Convention 1b: Presenter Naming Convention"/>
 </p>
-3. `views` - .json markup files placed here.  
-<p align="center">
+3. `views` - .json markup files placed here.
+<p align="left">
   <img src="https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/content_views.png"
        alt="PyLE view content naming by convention"
        title="Convention 1c: View Naming Convention"/>
