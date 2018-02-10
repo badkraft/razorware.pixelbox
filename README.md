@@ -70,8 +70,8 @@ app.mainloop()
 NOTE: about `import PyLE_Driver` and packages - different platforms require the package be found in a path or loaded from the
 `sys.path.insert(...)` command. Different platforms - Windows, Linux, etc - have different ways to handle finding the package.
 We will standardize this as best as we can. 
-<p style="color:red">For now, **if you plan on contributing** to the project, make the necessary changes to
-the importing source but do not push the file without consent. Doing so will cause your entire change-set to be rejected.</p>
+<span style="color:red">For now, **if you plan on contributing** to the project, make the necessary changes to
+the importing source but do not push the file without consent. Doing so will cause your entire change-set to be rejected.</span>
 
 [conv_1b]: https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/content_presenters.png "Convention 1b: Presenter Naming Convention"
 [conv_1c]: https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/content_views.png "Convention 1c: View Naming Convention"
