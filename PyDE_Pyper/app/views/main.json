@@ -18,7 +18,7 @@
           "grid": {
             "row": 0,
             "col": 0,
-            "align": "left right top bottom"
+            "align": "left"
           }
         }
       ]

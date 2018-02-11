@@ -4,5 +4,5 @@
     "tkinter@tk"
   ],
   "f:root": "cls-tk.Tk",
-  "startup": "test_app.views.sample_1"
+  "startup": "test_app.views.sample_2"
 }

@@ -2,22 +2,47 @@
   "header": {
     "class": "sample.Sample",
     "import": [],
-    "title": "Sample 1"
+    "title": "Sample: Hello, World"
   },
   "content": {
+    "Menu": [
+      "File",
+      [
+        [
+          "Open",
+          {}
+        ],
+        [
+          "|",
+          {}
+        ],
+        [
+          "Close",
+          {}
+        ]
+      ]
+    ],
     "Grid": [
       [
-        "<!-- Ignored Control -->",
-        {}
+        "Label",
+        {
+          "text": "Hello,",
+          "width": 25,
+          "grid": {
+            "row": 0,
+            "col": 0,
+            "align": "right"
+          }
+        }
       ],
       [
         "Label",
         {
-          "text": "Hello, World!",
-          "width": 50,
+          "text": "World!",
+          "width": 25,
           "grid": {
             "row": 0,
-            "col": 0,
+            "col": 1,
             "align": "left"
           }
         }
