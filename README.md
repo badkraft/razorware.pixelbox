@@ -1,6 +1,8 @@
 # Pixelbox: PyLE Driver & PyDE Pyper
 
-Pixelbox is a pythonic microframework for creating lightweight desktop GUIs.
+Pixelbox is a pythonic microframework for creating lightweight desktop GUIs by transforming JSON markup:
+
+![JSON markup to Tkinter GUI][json_to_gui]
 
 This microframework introduces the following:
 
@@ -120,5 +122,6 @@ This particular example renders the following:
 </p>
 
 
+[json_to_gui]: https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/json_to_gui.png "JSON markup to Tkinter GUI"
 [conv_1b]: https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/content_presenters.png "Convention 1b: Presenter Naming Convention"
 [conv_1c]: https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/content_views.png "Convention 1c: View Naming Convention"
