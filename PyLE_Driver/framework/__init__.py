@@ -245,7 +245,7 @@ def configure_header(view_cnf, hdr_cnf):
 
         else:
             if 'l:' in k:
-                add_label(k.split(':')[1])
+                add_label((k.split(':')[1], v))
 
             hdr.update({k: v})
 

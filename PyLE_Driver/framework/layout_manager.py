@@ -18,31 +18,44 @@ __anchors = {
     'top': 'n',
     'right top': 'ne',
     'right': 'e',
-    'right bottom': 'se'
+    'right bottom': 'se',
+    'bottom': 's',
+    'bottom left': 'sw'
 }
 
 
-def _build_menu(view, tk_menu, mnu_cnf, imports):
-    for k, v in mnu_cnf:
-        if k == '|':  # add separator
-            tk_menu.add_separator()
+def _build_menu(view, menu, mnu_cnf):
+    for i in range(0, len(mnu_cnf)):
+        if isinstance(mnu_cnf[i], list):
+            label, item = mnu_cnf[i][0], mnu_cnf[i][1]
+            i += 1
+        else:
+            label, item = mnu_cnf[i], mnu_cnf[i + 1]
+            i += 2
+
+        if label == '|':  # add separator
+            menu.add_separator()
             continue
 
-        # k is menu button label if v is dict
-        if isinstance(v, dict):
-            command = _build_command(view, v)
-            tk_menu.add_command(label=k, command=command)
-        elif isinstance(v, list):
-            menu_class = reference(tk_menu.__class__.__name__, imports)
-            cascade = _build_menu(view, menu_class(master=tk_menu, tearoff=0), tupleize(v, 2), imports)
+        # item is menu label if menu is dict
+        if isinstance(item, dict):
+            command = _build_command(view, item)
+            menu.add_command(label=label, command=command)
+        elif isinstance(item, list):
+            # menu content is a list of menu items to be cascaded under parent menu
+            mnu_cls = reference(menu.__class__.__name__)
+            sub_menu = _build_menu(view, mnu_cls(master=menu, tearoff=0), item)
 
-            tk_menu.add_cascade(label=k, menu=cascade)
+            menu.add_cascade(label=label, menu=sub_menu)
 
-    return tk_menu
+        if i >= len(mnu_cnf):
+            break
+
+    return menu
 
 
 def _build_command(view, cmd_cnf):
-    command = None if cmd_cnf['command'] == "" else cmd_cnf['command']
+    command = None if ('command' not in cmd_cnf or cmd_cnf['command'] == "") else cmd_cnf['command']
     parameter = None if ('parameter' not in cmd_cnf or cmd_cnf['parameter'] == "") else cmd_cnf['parameter']
 
     if parameter is not None:
@@ -57,7 +70,12 @@ def _build_command(view, cmd_cnf):
           .format(command=command,
                   parameter="" if parameter is None else parameter))
 
-    return lambda: command(parameter)
+    return lambda: _execute_command(command, parameter)
+
+
+def _execute_command(cmd, param):
+    if cmd.can_execute(param):
+        cmd.execute(param)
 
 
 def _get_image_source(cnf):
@@ -169,8 +187,8 @@ class LayoutManager:
             elif d == 'Menu':
                 print("menu layout")
 
-                tk_menu = reference(d, self.__imports)
-                menu = _build_menu(self.__view, tk_menu(master=self.__view.master), content[d], self.__imports)
+                tk_menu = reference(d)
+                menu = _build_menu(self.__view, tk_menu(master=self.__view.master), content[d])
                 self.__view.master.config(menu=menu)
 
         self.__initialize_content(layout)

@@ -2,7 +2,11 @@
   "header": {
     "class": "sample.Sample",
     "import": [],
-    "title": "Sample: Hello, World"
+    "title": "Sample: Adding Menu",
+    "l:presenters": "mod-test_app.presenters"
+  },
+  "resources": {
+    "context": "presenters:sample_2.Sample_2"
   },
   "content": {
     "Menu": [
@@ -18,8 +22,11 @@
             {}
           ],
           [
-            "Close",
-            {}
+            "Exit",
+            {
+              "parameter": "{view master}",
+              "command": "{binding quit}"
+            }
           ]
         ]
       ],

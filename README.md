@@ -1,11 +1,13 @@
 # Pixelbox: PyLE Driver & PyDE Pyper
 
-Pixelbox is a pythonic microframework for creating lightweight desktop GUIs.
+Pixelbox is a pythonic microframework for creating lightweight desktop GUIs by transforming JSON markup:
+
+![JSON markup to Tkinter GUI][json_to_gui]
 
 This microframework introduces the following:
 
 * **PyLE Driver** is a light framework that consumes JSON as a markup language. The markup is a GUI development tool allowing developers to create robust user interfaces. The PyLE (Python Light Environment) framework is conducive to creating manageable graphic interfaces that implement the Model-View-Presenter (MVP) paradigm.
-* **PyDE Pyper** is a ____ that _____ ... Python Development Environment.
+* **PyDE Pyper** is a graphical design environment that generates much of the JSON markup. This tool is built using PyLE Driver and will be the basis from which samples are generated. 
 
 ## Conventions
 The PyLE framework relies on several conventions. The first is how a project is organized:
@@ -120,5 +122,6 @@ This particular example renders the following:
 </p>
 
 
+[json_to_gui]: https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/json_to_gui.png "JSON markup to Tkinter GUI"
 [conv_1b]: https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/content_presenters.png "Convention 1b: Presenter Naming Convention"
 [conv_1c]: https://github.com/badkraft/razorware.pixelbox/blob/master/repo_images/content_views.png "Convention 1c: View Naming Convention"
